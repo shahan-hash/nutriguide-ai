@@ -7,7 +7,7 @@ and allergy settings, and the foods you actually have at home. Each meal is sear
 so that its real calories come as close as possible to the target, for example a 876 kcal lunch
 made only from rice, dal, paneer and roti.
 
-[**Open the live app**](https://nutriguide-ai.streamlit.app)
+[**Open the live app**](https://nutriguide-ai-5.streamlit.app)
 
 > Educational project. Not medical advice. See [Limitations](#limitations).
 
