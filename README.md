@@ -168,4 +168,4 @@ kept after the page is closed or refreshed.
 
 ## Author
 
-Built by [shahan-hash](https://github.com/shahan-hash) as a B.Tech project.
+Built by [Shahan Ahmad](https://github.com/shahan-hash) as a B.Tech project.
