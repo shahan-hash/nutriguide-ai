@@ -11,8 +11,8 @@ These results were produced by actually running the tests in this project (not e
   constraints). History tests use a temporary SQLite file (never your real history).
 * Tests marked **synthetic** use hand-made rows on purpose (to test arithmetic and bad values).
 
-Result of the final run: **Ran 56 tests - OK**
-(56 tests: 48 logic tests + 8 end-to-end app tests).
+Result of the final run: **Ran 58 tests - OK**
+(58 tests: 48 logic tests + 10 end-to-end app tests).
 
 ## What each test group covers
 
@@ -24,6 +24,7 @@ Result of the final run: **Ran 56 tests - OK**
 | Dish limit (`test_dish_limit.py`) | 5 | limits 1/2/3/4 never exceeded (generation, replacement, full pipeline), limit not silently overridden, bigger portion is not a new dish |
 | Replace meal (`test_replace.py`) | 6 | replace Breakfast / Lunch / Dinner: the other two meals are exactly identical (foods and grams), different food combination, totals + coverage recalculated, repeated clicks cycle through alternatives, no alternative -> original kept with a message, empty pool does not crash |
 | Profiles & history (`test_profiles_history.py`) | 8 | missing DB / empty history safe, new profile settings round-trip, history survives a restart (separate Python process), two profiles never mix, 10-day vs 15-day windows (backdated rows), update-in-place without duplicates, history gives variety with fit within 6 points, history cannot force other foods |
+| Public demo mode (`test_public_mode.py`) | 2 | two visitors never see each other's profiles in public mode; a visitor keeps their own profile during the session |
 | Extras (`test_extras.py`) | 4 | household measures (roti / katori / egg / glass, blank for unknown foods or bad input, display only), download button + split bars + approx. measures render without errors |
 | App end-to-end (`test_app.py`) | 7 | real `app.py` run with Streamlit AppTest: first load, custom 876 kcal lunch, strict foods, Replace Breakfast/Lunch/Dinner without any exception (the old NameError scenario) and with other meals unchanged, dish-limit selector, two profiles keep separate settings/history, 10 vs 15 days + variety on regenerate, strict mode OFF message |
 
@@ -76,16 +77,16 @@ Dinner    1000 kcal target -> 999 kcal planned (99.9%)  Dal 50 g, Roti 200 g, Co
 
 ## Old code vs new code (calorie accuracy, measured with `evaluate.py`)
 
-Same random profiles (seed 2026, 12 profiles x 3 meals) run on the ORIGINAL uploaded code and on the new code.
+Same random profiles (seed 2026, 12 profiles x 3 meals) run on the first version of the project and on the current version.
 
 | Mode | Code | Mean error | Meals within 5% |
 |---|---|---|---|
-| Common foods | original | 16.4% | 25.0% |
-| Common foods | new | 0.1% | 100% |
-| 8 typed foods | original | 6.7% | 52.8% |
-| 8 typed foods | new | 1.1% | 94.4% |
+| Common foods | first version | 16.4% | 25.0% |
+| Common foods | current | 0.1% | 100% |
+| 8 typed foods | first version | 6.7% | 52.8% |
+| 8 typed foods | current | 1.1% | 94.4% |
 
-Small sample, calories only; see README section 5.
+Small sample, calories only; see the README (Tests and evaluation).
 
 ## Also done
 
@@ -159,6 +160,8 @@ test_missing_database_and_empty_history_are_safe (tests.test_profiles_history.Pr
 test_new_profile_settings_roundtrip (tests.test_profiles_history.ProfilesAndHistory.test_new_profile_settings_roundtrip) ... ok
 test_two_profiles_never_mix (tests.test_profiles_history.ProfilesAndHistory.test_two_profiles_never_mix) ... ok
 test_update_plan_replaces_row_not_duplicates (tests.test_profiles_history.ProfilesAndHistory.test_update_plan_replaces_row_not_duplicates) ... ok
+ok
+ok
 test_compat_wrapper (tests.test_replace.ReplaceMeal.test_compat_wrapper) ... ok
 test_empty_pool_does_not_crash (tests.test_replace.ReplaceMeal.test_empty_pool_does_not_crash) ... ok
 test_no_alternative_keeps_original_and_explains (tests.test_replace.ReplaceMeal.test_no_alternative_keeps_original_and_explains) ... ok
@@ -167,7 +170,7 @@ test_replace_each_meal_leaves_other_two_exactly_unchanged (tests.test_replace.Re
 test_totals_are_recalculated_after_replacement (tests.test_replace.ReplaceMeal.test_totals_are_recalculated_after_replacement) ... ok
 
 ----------------------------------------------------------------------
-Ran 56 tests in 25.742s
+Ran 58 tests in 23.918s
 
 OK
 ```

@@ -1,6 +1,30 @@
+import os
+import tempfile
+import uuid
+from pathlib import Path
+
 import streamlit as st
 import pandas as pd
 from html import escape
+
+# ---------------------------------------------------------------------------
+# PUBLIC DEMO MODE
+# On a shared online server (for example Streamlit Community Cloud) every
+# visitor would otherwise see every other visitor's profile names and meal
+# history.  In public mode each browser session gets a private random prefix,
+# only its own profiles are listed, and the database lives in a temp folder.
+# It switches on automatically on Streamlit Cloud, or with NUTRIGUIDE_PUBLIC=1.
+# On your own computer it stays OFF (profiles persist in data/processed).
+# ---------------------------------------------------------------------------
+PUBLIC_MODE = (
+    os.environ.get("NUTRIGUIDE_PUBLIC", "").strip() == "1"
+    or Path("/mount/src").exists()
+)
+if PUBLIC_MODE:
+    os.environ.setdefault(
+        "NUTRIGUIDE_DB",
+        os.path.join(tempfile.gettempdir(), "nutriguide_public_demo.db"),
+    )
 
 from nutrition_targets import calculate_targets, MIN_MEAL_KCAL, MAX_MEAL_KCAL
 from user_profile import create_user_profile, DEFAULT_MAX_DISHES, DEFAULT_HISTORY_DAYS
@@ -1450,7 +1474,15 @@ with st.sidebar:
     # ---------------- PROFILE SELECTOR ----------------
     side_heading("Profile")
 
-    known_profiles = list_profiles()
+    if PUBLIC_MODE:
+        st.session_state.setdefault("session_token", uuid.uuid4().hex[:12])
+        PROFILE_PREFIX = st.session_state["session_token"] + "~"
+        known_profiles = [
+            (pid, name) for pid, name in list_profiles() if pid.startswith(PROFILE_PREFIX)
+        ]
+    else:
+        PROFILE_PREFIX = ""
+        known_profiles = list_profiles()
     profile_names = {pid: name for pid, name in known_profiles}
     profile_options = [NEW_PROFILE] + [pid for pid, _ in known_profiles]
 
@@ -1474,7 +1506,9 @@ with st.sidebar:
             key="new_profile_name",
             placeholder="for example: rahul",
         ).strip()
-        active_profile_id = normalize_profile_id(new_name) if new_name else None
+        active_profile_id = (
+            PROFILE_PREFIX + normalize_profile_id(new_name) if new_name else None
+        )
         active_profile_name = new_name or None
     else:
         active_profile_id = choice
@@ -1497,6 +1531,11 @@ with st.sidebar:
         f"Active: **{active_profile_name}**" if active_profile_name
         else "No active profile yet."
     )
+    if PUBLIC_MODE:
+        st.caption(
+            "Public demo: your profile and history are private to this browser "
+            "session and are not kept after you close or refresh the page."
+        )
 
     # ---------------- PERSONAL DETAILS ----------------
     side_heading("Personal details")
