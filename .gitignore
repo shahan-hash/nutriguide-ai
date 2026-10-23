@@ -1,0 +1,24 @@
+# virtual environment
+venv/
+.venv/
+env/
+
+# python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# secrets / local config
+.env
+.streamlit/secrets.toml
+
+# local history + profiles database (personal data, created automatically)
+*.db
+*.sqlite
+data/processed/meal_history.db
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
