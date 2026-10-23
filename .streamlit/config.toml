@@ -1,0 +1,8 @@
+# Force the LIGHT Streamlit theme so input boxes stay light even when
+# Windows / the browser is in dark mode.
+[theme]
+base = "light"
+primaryColor = "#1f9d6b"
+backgroundColor = "#f5f4ee"
+secondaryBackgroundColor = "#e9efe9"
+textColor = "#10241a"
